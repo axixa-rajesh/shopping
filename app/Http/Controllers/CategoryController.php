@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -14,8 +16,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
-
+        
+        return view('category.index',['data'=>Category::all()]);
     }
 
     /**
@@ -26,7 +28,8 @@ class CategoryController extends Controller
     public function create()
     {
         //
-        return view('categories.index');
+        return view("category.create");
+        
     }
 
     /**
@@ -37,7 +40,19 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       $validated = $request->validate([
+        'name' => ['required','max:50'],
+        'description' =>[ 'max:255']
+       ]);
+
+       $validated['user_id'] = Auth::id();
+        // dd($validated);
+
+    //    $validated['user_id'] = 1;
+        Category::create($validated);
+    
+        return redirect()->route('category.index')->with('success', 'Category created successfully.');
+    
     }
 
     /**
@@ -57,10 +72,16 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+        public function edit($id)
     {
-        //
+        $category=Category::find($id);
+        // dd($category); 
+        return (view("category.edit",compact('category')));
     }
+    // public function edit(Category $category)
+    // {
+    //     // dd($category);
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -71,7 +92,25 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        // dd($request->name);
+        // dd($category);
+
+            
+        $validated = $request->validate([
+            'name' => ['required','max:50'],
+            'description' =>[ 'max:255']
+        ]);
+
+        //    $validated['user_id'] = Auth::id();
+            // dd($validated);
+
+        //    $validated['user_id'] = 1;
+        $category->update($validated);
+        
+            return redirect()->route('category.index')->with('success', 'Category updated successfully.');
+        
+
+
     }
 
     /**
