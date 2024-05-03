@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -24,7 +26,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('products.create');
     }
 
     /**
@@ -35,7 +37,25 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the request data
+        $validated = $request->validate([
+            'name' => ['required', 'max:255'],
+            'description' => [],
+            'mrp' => [],
+            'price' => [],
+            'discount' => [],
+            'cgst' => [],
+            'sgst' => [],
+        ]);
+
+        // Assign user_id to the authenticated user's ID
+        $validated['user_id'] = Auth::id();
+
+        // Create a new product record in the database using Eloquent ORM
+        Product::create($validated);
+
+        // Redirect back to the products page with a success message
+        return redirect("/products")->with("success", "Data has been saved successfully");
     }
 
     /**
