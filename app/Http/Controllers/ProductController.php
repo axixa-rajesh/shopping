@@ -16,7 +16,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        return view('products.index',['data'=>Product::all()]);
+        
     }
 
     /**
@@ -77,7 +78,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        // $category=Category::find($id);
+        // dd($product); 
+        return (view("products.edit",compact('product')));
     }
 
     /**
