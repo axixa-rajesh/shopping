@@ -79,7 +79,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         // $category=Category::find($id);
-        // dd($product); 
+        // dd($product);
         return (view("products.edit",compact('product')));
     }
 
@@ -103,6 +103,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
-    }
+        // dd($product);
+
+        $proddelete = Product::findOrFail($product->id);
+        $datadeleted = $proddelete->delete();
+        return redirect()->back()->with("success","This record has been deleted successfully");
+    }   
 }
